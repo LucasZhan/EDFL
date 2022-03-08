@@ -27,18 +27,18 @@ if __name__ == '__main__':
     logger = SummaryWriter('../logs')
 
     args = args_parser()
-    exp_details(args)
+    exp_details(args)       # print the experiment details
 
-    if args.gpu_id:
-        torch.cuda.set_device(args.gpu_id)
+    if args.gpu is not None:
+        torch.cuda.set_device(args.gpu)
     device = 'cuda' if args.gpu else 'cpu'
 
     # load dataset and user groups
-    train_dataset, test_dataset, user_groups = get_dataset(args)
+    train_dataset, test_dataset, user_groups = get_dataset(args)    # user_groups: a dict which key is the user index and values are training data index
 
     # BUILD MODEL
     if args.model == 'cnn':
-        # Convolutional neural netork
+        # Convolutional neural network
         if args.dataset == 'mnist':
             global_model = CNNMnist(args=args)
         elif args.dataset == 'fmnist':
@@ -80,6 +80,7 @@ if __name__ == '__main__':
         m = max(int(args.frac * args.num_users), 1)
         idxs_users = np.random.choice(range(args.num_users), m, replace=False)
 
+        # Train the local models and use the average weights of local weights to update model in server
         for idx in idxs_users:
             local_model = LocalUpdate(args=args, dataset=train_dataset,
                                       idxs=user_groups[idx], logger=logger)
@@ -95,6 +96,7 @@ if __name__ == '__main__':
         global_model.load_state_dict(global_weights)
 
         loss_avg = sum(local_losses) / len(local_losses)
+        # train loss it defined as the average of local losses
         train_loss.append(loss_avg)
 
         # Calculate avg training accuracy over all users at every epoch
@@ -122,9 +124,11 @@ if __name__ == '__main__':
     print("|---- Test Accuracy: {:.2f}%".format(100*test_acc))
 
     # Saving the objects train_loss and train_accuracy:
-    file_name = '../save/objects/{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}].pkl'.\
-        format(args.dataset, args.model, args.epochs, args.frac, args.iid,
-               args.local_ep, args.local_bs)
+
+    file_name = os.path.join(os.getcwd(), 'save/objects/{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}].pkl'.format(args.dataset, args.model, args.epochs, args.frac, args.iid,
+               args.local_ep, args.local_bs))
+    # file_name = '../save/objects/{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}].pkl'.format(args.dataset, args.model, args.epochs, args.frac, args.iid,
+    #            args.local_ep, args.local_bs)
 
     with open(file_name, 'wb') as f:
         pickle.dump([train_loss, train_accuracy], f)

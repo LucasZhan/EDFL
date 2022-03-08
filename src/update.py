@@ -37,6 +37,7 @@ class LocalUpdate(object):
         """
         Returns train, validation and test dataloaders for a given dataset
         and user indexes.
+        ( Returns train, validation and test dataloader for a given dataset and indexes of a specific user.)
         """
         # split indexes for train, validation, and test (80, 10, 10)
         idxs_train = idxs[:int(0.8*len(idxs))]

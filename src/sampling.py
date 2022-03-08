@@ -14,11 +14,13 @@ def mnist_iid(dataset, num_users):
     :param num_users:
     :return: dict of image index
     """
-    num_items = int(len(dataset)/num_users)
+    num_items = int(len(dataset)/num_users)         # Number of items per client / user.
     dict_users, all_idxs = {}, [i for i in range(len(dataset))]
     for i in range(num_users):
+        # select 'num_items' data from dataset without repetition.
         dict_users[i] = set(np.random.choice(all_idxs, num_items,
                                              replace=False))
+        # remove selected items from dataset.
         all_idxs = list(set(all_idxs) - dict_users[i])
     return dict_users
 
