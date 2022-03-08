@@ -80,10 +80,22 @@ if __name__ == '__main__':
         m = max(int(args.frac * args.num_users), 1)
         idxs_users = np.random.choice(range(args.num_users), m, replace=False)
 
+        # Randomly select clients (users) which use cpu and gpu
+        idxs_users_cpu = np.random.choice(idxs_users, len(idxs_users)*args.cpu_frac, replace=False)
+        idxs_users_gpu = np.array(set(idxs_users) - set(idxs_users_cpu))
+
         # Train the local models and use the average weights of local weights to update model in server
-        for idx in idxs_users:
+        for idx in idxs_users_cpu:
             local_model = LocalUpdate(args=args, dataset=train_dataset,
-                                      idxs=user_groups[idx], logger=logger)
+                                      idxs=user_groups[idx], logger=logger, device='cpu')
+            w, loss = local_model.update_weights(
+                model=copy.deepcopy(global_model), global_round=epoch)
+            local_weights.append(copy.deepcopy(w))
+            local_losses.append(copy.deepcopy(loss))
+
+        for idx in idxs_users_gpu:
+            local_model = LocalUpdate(args=args, dataset=train_dataset,
+                                      idxs=user_groups[idx], logger=logger, device='cuda')
             w, loss = local_model.update_weights(
                 model=copy.deepcopy(global_model), global_round=epoch)
             local_weights.append(copy.deepcopy(w))
