@@ -65,6 +65,6 @@ def args_parser():
                         help='rounds of early stopping')
     parser.add_argument('--verbose', type=int, default=1, help='verbose')
     parser.add_argument('--seed', type=int, default=1, help='random seed')
-    parser.add_argument('--cpu_frac', type=float, default=0.0, help='the fraction of clients which use cpu')
+    parser.add_argument('--cpu_frac', type=float, default=0.0, help='the fraction of cpu users, should be in [0,1]')
     args = parser.parse_args()
     return args

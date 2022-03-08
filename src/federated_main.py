@@ -81,6 +81,7 @@ if __name__ == '__main__':
         idxs_users = np.random.choice(range(args.num_users), m, replace=False)
 
         # Randomly select clients (users) which use cpu and gpu
+        assert args.cpu_frac >= 0 and args.cpu_frac <= 1, 'cpu fraction should be in [0,1] !'
         idxs_users_cpu = np.random.choice(idxs_users, len(idxs_users)*args.cpu_frac, replace=False)
         idxs_users_gpu = np.array(set(idxs_users) - set(idxs_users_cpu))
 
