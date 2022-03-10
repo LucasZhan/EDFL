@@ -82,8 +82,8 @@ if __name__ == '__main__':
 
         # Randomly select clients (users) which use cpu and gpu
         assert args.cpu_frac >= 0 and args.cpu_frac <= 1, 'cpu fraction should be in [0,1] !'
-        idxs_users_cpu = np.random.choice(idxs_users, len(idxs_users)*args.cpu_frac, replace=False)
-        idxs_users_gpu = np.array(set(idxs_users) - set(idxs_users_cpu))
+        idxs_users_cpu = np.random.choice(idxs_users, int(len(idxs_users)*args.cpu_frac), replace=False)
+        idxs_users_gpu = np.setdiff1d(idxs_users, idxs_users_cpu)
 
         # Train the local models and use the average weights of local weights to update model in server
         for idx in idxs_users_cpu:
@@ -117,7 +117,7 @@ if __name__ == '__main__':
         global_model.eval()
         for c in range(args.num_users):
             local_model = LocalUpdate(args=args, dataset=train_dataset,
-                                      idxs=user_groups[idx], logger=logger)
+                                      idxs=user_groups[idx], logger=logger, device='cuda' if args.gpu else 'cpu')
             acc, loss = local_model.inference(model=global_model)
             list_acc.append(acc)
             list_loss.append(loss)
