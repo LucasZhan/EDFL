@@ -14,16 +14,19 @@ def none_or_num(value):
     else:
         return int(value)
 
+
 def none_or_str(value):
     if value.lower() == 'none':
         return None
     else:
         return value
 
+
 def parser_config(config_path):
     with open(config_path, 'r') as stream:
         conf = yaml.safe_load(stream)
     return conf
+
 
 def args_parser():
     parser = argparse.ArgumentParser()
@@ -87,9 +90,14 @@ def args_parser():
     parser.add_argument('--conf_file_name', type=none_or_str, default=None, help='use configuration in <configure> '
                                                                                  'folder, default: use argsparse as'
                                                                                  ' configuration ')
+    parser.add_argument('specify_users_idx', type=bool, default=False, help='whether involves specific users in '
+                                                                            'training process. Only support yaml '
+                                                                            'configuration to import users indexes.('
+                                                                            'default is using fraction to randomly '
+                                                                            'select)')
     args = parser.parse_args()
 
-    args.project_home = os.path.abspath(os.path.join(sys.path[0],'..'))
+    args.project_home = os.path.abspath(os.path.join(sys.path[0], '..'))
 
     if args.conf_file_name:
         config_path = os.path.join(args.project_home, 'configure', args.conf_file_name)
@@ -119,5 +127,9 @@ def args_parser():
         args.verbose = conf['verbose']
         args.seed = conf['seed']
         args.cpu_frac = conf['cpu_frac']
+
+        if args.specify_users_idx:
+            assert len(conf['users_idx']) > 0, 'the number of users indexes should be larger than zero!'
+            args.users_idx = conf['users_idx']
 
     return args

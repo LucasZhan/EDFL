@@ -79,7 +79,11 @@ if __name__ == '__main__':
 
         global_model.train()
         m = max(int(args.frac * args.num_users), 1)
-        idxs_users = np.random.choice(range(args.num_users), m, replace=False)
+
+        if args.specify_users_idx:
+            idxs_users = args.users_idx
+        else:
+            idxs_users = np.random.choice(range(args.num_users), m, replace=False)
 
         # Randomly select clients (users) which use cpu and gpu
         assert args.cpu_frac >= 0 and args.cpu_frac <= 1, 'cpu fraction should be in [0,1] !'
