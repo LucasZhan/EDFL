@@ -3,12 +3,27 @@
 # Python version: 3.6
 
 import argparse
+import yaml
+import os
+import sys
+
 
 def none_or_num(value):
     if value == 'None':
         return None
     else:
+        return int(value)
+
+def none_or_str(value):
+    if value.lower() == 'none':
+        return None
+    else:
         return value
+
+def parser_config(config_path):
+    with open(config_path, 'r') as stream:
+        conf = yaml.safe_load(stream)
+    return conf
 
 def args_parser():
     parser = argparse.ArgumentParser()
@@ -30,7 +45,8 @@ def args_parser():
                         help='SGD momentum (default: 0.5)')
 
     # model arguments
-    parser.add_argument('--model', type=str, default='mlp', help='model name')
+    # parser.add_argument('--model', type=str, default='mlp', help='model name')
+    parser.add_argument('--model', type=str, default='cnn', help='model name')
     parser.add_argument('--kernel_num', type=int, default=9,
                         help='number of each kind of kernel')
     parser.add_argument('--kernel_sizes', type=str, default='3,4,5',
@@ -48,15 +64,17 @@ def args_parser():
                         strided convolutions")
 
     # other arguments
-    parser.add_argument('--dataset', type=str, default='mnist', help="name \
-                        of dataset")
+    # parser.add_argument('--dataset', type=str, default='mnist', help="name \
+    #                     of dataset")
+    parser.add_argument('--dataset', type=str, default='cifar', help="name \
+                            of dataset")
     parser.add_argument('--num_classes', type=int, default=10, help="number \
                         of classes")
     parser.add_argument('--gpu', default=None, type=none_or_num, help="To use cuda, set \
                         to a specific GPU ID. Default set to use CPU.")
     parser.add_argument('--optimizer', type=str, default='sgd', help="type \
                         of optimizer")
-    parser.add_argument('--iid', type=int, default=1,
+    parser.add_argument('--iid', type=int, default=0,
                         help='Default set to IID. Set to 0 for non-IID.')
     parser.add_argument('--unequal', type=int, default=0,
                         help='whether to use unequal data splits for  \
@@ -66,5 +84,40 @@ def args_parser():
     parser.add_argument('--verbose', type=int, default=1, help='verbose')
     parser.add_argument('--seed', type=int, default=1, help='random seed')
     parser.add_argument('--cpu_frac', type=float, default=1.0, help='the fraction of cpu users, should be in [0,1]')
+    parser.add_argument('--conf_file_name', type=none_or_str, default=None, help='use configuration in <configure> '
+                                                                                 'folder, default: use argsparse as'
+                                                                                 ' configuration ')
     args = parser.parse_args()
+
+    args.project_home = os.path.abspath(os.path.join(sys.path[0],'..'))
+
+    if args.conf_file_name:
+        config_path = os.path.join(args.project_home, 'configure', args.conf_file_name)
+        conf = parser_config(config_path)
+
+        args.epochs = conf['epochs']
+        args.num_users = conf['num_users']
+        args.frac = conf['frac']
+        args.local_ep = conf['local_ep']
+        args.local_bs = conf['local_bs']
+        args.lr = conf['lr']
+        args.momentum = conf['momentum']
+        args.model = conf['model']
+        args.kernel_num = conf['kernel_num']
+        args.kernel_size = conf['kernel_size']
+        args.num_channels = conf['num_channels']
+        args.norm = conf['norm']
+        args.num_filters = conf['num_filters']
+        args.max_pool = conf['max_pool']
+        args.dataset = conf['dataset']
+        args.num_classes = conf['num_classes']
+        args.gpu = conf['gpu']
+        args.optimizer = conf['optimizer']
+        args.iid = conf['iid']
+        args.unequal = conf['unequal']
+        args.stopping_rounds = conf['stopping_rounds']
+        args.verbose = conf['verbose']
+        args.seed = conf['seed']
+        args.cpu_frac = conf['cpu_frac']
+
     return args

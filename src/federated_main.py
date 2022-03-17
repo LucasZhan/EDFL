@@ -9,6 +9,7 @@ import time
 import pickle
 import numpy as np
 from tqdm import tqdm
+import sys
 
 import torch
 from tensorboardX import SummaryWriter
@@ -138,10 +139,12 @@ if __name__ == '__main__':
 
     # Saving the objects train_loss and train_accuracy:
 
-    file_name = os.path.join(os.getcwd(), 'save/objects/{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}].pkl'.format(args.dataset, args.model, args.epochs, args.frac, args.iid,
+    file_name = os.path.join(args.project_home, 'save/objects/{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}].pkl'.format(args.dataset, args.model, args.epochs, args.frac, args.iid,
                args.local_ep, args.local_bs))
     # file_name = '../save/objects/{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}].pkl'.format(args.dataset, args.model, args.epochs, args.frac, args.iid,
     #            args.local_ep, args.local_bs)
+
+    logger.close()
 
     with open(file_name, 'wb') as f:
         pickle.dump([train_loss, train_accuracy], f)
