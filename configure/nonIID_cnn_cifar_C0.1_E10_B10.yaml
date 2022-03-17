@@ -1,0 +1,50 @@
+# number of rounds of training
+epochs: 10
+# number of clients: K
+num_users: 100
+# the fraction of clients: C
+frac: 0.1
+# the number of local epochs: E
+local_ep: 10
+# local batch size: B
+local_bs: 10
+# learning rate
+lr: 0.01
+# SGD momentum (default: 0.5)
+momentum: 0.5
+
+# model name
+model: cnn
+# number of each kind of kernel
+kernel_num: 9
+# comma-separated kernel size to use for convolution
+kernel_size: '3,4,5'
+# number of channels of imgs
+num_channels: 1
+# batch_norm, layer_norm, or None
+norm: 'batch_norm'
+# number of filters for conv nets -- 32 for mini-imagenet, 64 for omiglot.
+num_filters: 32
+# Whether use max pooling rather than strided convolutions
+max_pool: True
+
+# name of dataset
+dataset: 'cifar'
+# number of classes
+num_classes: 10
+# To use cuda, set to a specific GPU ID. Default set to use CPU.
+gpu: ~
+# type of optimizer
+optimizer: 'sgd'
+# Default set to IID. Set to 0 for non-IID.
+iid: 0
+# whether to use unequal data splits for non-i.i.d setting (use 0 for equal splits)
+unequal: 0
+# round of early stopping
+stopping_rounds: 10
+# verbose
+verbose: 1
+# random seed
+seed: 1
+# the fraction of users which use cpu for training
+cpu_frac: 1.0
