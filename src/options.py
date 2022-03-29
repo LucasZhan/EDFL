@@ -90,14 +90,15 @@ def args_parser():
     parser.add_argument('--conf_file_name', type=none_or_str, default=None, help='use configuration in <configure> '
                                                                                  'folder, default: use argsparse as'
                                                                                  ' configuration ')
-    parser.add_argument('specify_users_idx', type=bool, default=False, help='whether involves specific users in '
+    parser.add_argument('--specify_users_idx', type=bool, default=False, help='whether involves specific users in '
                                                                             'training process. Only support yaml '
                                                                             'configuration to import users indexes.('
                                                                             'default is using fraction to randomly '
                                                                             'select)')
     args = parser.parse_args()
 
-    args.project_home = os.path.abspath(os.path.join(sys.path[0], '..'))
+    # the root of this repository
+    args.project_home = os.path.abspath(os.path.join(os.path.realpath(__file__), "../.."))
 
     if args.conf_file_name:
         config_path = os.path.join(args.project_home, 'configure', args.conf_file_name)
