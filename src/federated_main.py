@@ -78,7 +78,7 @@ if __name__ == '__main__':
         print(f'\n | Global Training Round : {epoch+1} |\n')
 
         global_model.train()
-        m = max(int(args.frac * args.num_users), 1)
+        m = max(int(args.frac * args.num_users), 1)     # number of selected users
 
         if args.specify_users_idx:
             idxs_users = args.users_idx
@@ -114,15 +114,17 @@ if __name__ == '__main__':
         global_model.load_state_dict(global_weights)
 
         loss_avg = sum(local_losses) / len(local_losses)
-        # train loss it defined as the average of local losses
+        # train loss it defined as the average of local losses, append every epoch
         train_loss.append(loss_avg)
 
         # Calculate avg training accuracy over all users at every epoch
         list_acc, list_loss = [], []
         global_model.eval()
         for c in range(args.num_users):
+            # local_model = LocalUpdate(args=args, dataset=train_dataset,
+            #                           idxs=user_groups[idx], logger=logger, device='cuda' if args.gpu else 'cpu')
             local_model = LocalUpdate(args=args, dataset=train_dataset,
-                                      idxs=user_groups[idx], logger=logger, device='cuda' if args.gpu else 'cpu')
+                                      idxs=user_groups[c], logger=logger, device='cuda' if args.gpu else 'cpu')
             acc, loss = local_model.inference(model=global_model)
             list_acc.append(acc)
             list_loss.append(loss)
