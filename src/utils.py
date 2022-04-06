@@ -8,6 +8,8 @@ from torchvision import datasets, transforms
 from sampling import mnist_iid, mnist_noniid, mnist_noniid_unequal
 from sampling import cifar_iid, cifar_noniid
 
+from update import test_inference
+
 
 def get_dataset(args):
     """ Returns train and test datasets and a user group which is a dict where
@@ -22,10 +24,10 @@ def get_dataset(args):
              transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
         train_dataset = datasets.CIFAR10(data_dir, train=True, download=True,
-                                       transform=apply_transform)
+                                         transform=apply_transform)
 
         test_dataset = datasets.CIFAR10(data_dir, train=False, download=True,
-                                      transform=apply_transform)
+                                        transform=apply_transform)
 
         # sample training data amongst users
         if args.iid:
@@ -100,3 +102,22 @@ def exp_details(args):
     print(f'    Local Batch size   : {args.local_bs}')
     print(f'    Local Epochs       : {args.local_ep}\n')
     return
+
+
+def cal_benefit(args, global_model, global_weights, local_weights, test_dataset):
+    """
+    Calculate the accuracy contribution of a specific user.
+    """
+    # calculate the accuracy of previous model (original global model)
+    pre_acc, _ = test_inference(args, global_model, test_dataset)
+
+    ave_weights = average_weights([global_weights, local_weights])
+
+    cur_model = copy.deepcopy(global_model)
+    cur_model.load_state_dict(ave_weights)
+
+    # calculate the accuracy of current model which using the average weights of global weights
+    # and local weights from 1 specific user
+    cur_acc, _ = test_inference(args, cur_model, test_dataset)
+
+    return cur_acc - pre_acc
