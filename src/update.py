@@ -53,7 +53,7 @@ class LocalUpdate(object):
                                 batch_size=int(len(idxs_test)/10), shuffle=False)
         return trainloader, validloader, testloader
 
-    def update_weights(self, model, global_round, device):
+    def update_weights(self, model, global_round):
         # Set mode to train model
         model.train()
         epoch_loss = []
@@ -70,10 +70,6 @@ class LocalUpdate(object):
             batch_loss = []
             for batch_idx, (images, labels) in enumerate(self.trainloader):
                 images, labels = images.to(self.device), labels.to(self.device)
-
-                if device == 'cuda':
-                    images = images.cuda()
-                    labels = labels.cuda()
 
                 model.zero_grad()
                 log_probs = model(images)

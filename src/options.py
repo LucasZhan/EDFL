@@ -40,7 +40,7 @@ def args_parser():
                         help='the fraction of clients: C')
     parser.add_argument('--local_ep', type=int, default=10,
                         help="the number of local epochs: E")
-    parser.add_argument('--local_bs', type=int, default=20,
+    parser.add_argument('--local_bs', type=int, default=64,
                         help="local batch size: B")
     parser.add_argument('--lr', type=float, default=0.01,
                         help='learning rate')
@@ -86,8 +86,8 @@ def args_parser():
                         help='rounds of early stopping')
     parser.add_argument('--verbose', type=int, default=1, help='verbose')
     parser.add_argument('--seed', type=int, default=1, help='random seed')
-    # parser.add_argument('--cpu_frac', type=float, default=0.0, help='the fraction of cpu users, should be in [0,1]')
-    parser.add_argument('--cpu_frac', type=float, default=1.0, help='the fraction of cpu users, should be in [0,1]')
+    parser.add_argument('--cpu_frac', type=float, default=0.0, help='the fraction of cpu users, should be in [0,1]')
+    # parser.add_argument('--cpu_frac', type=float, default=1.0, help='the fraction of cpu users, should be in [0,1]')
     parser.add_argument('--conf_file_name', type=none_or_str, default=None, help='use configuration in <configure> '
                                                                                  'folder, default: use argsparse as'
                                                                                  ' configuration ')

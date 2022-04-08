@@ -95,7 +95,7 @@ if __name__ == '__main__':
             local_model = LocalUpdate(args=args, dataset=train_dataset,
                                       idxs=user_groups[idx], logger=logger, device='cpu')
             w, loss = local_model.update_weights(
-                model=copy.deepcopy(global_model), global_round=epoch, device='cpu')
+                model=copy.deepcopy(global_model), global_round=epoch)
             local_weights.append(copy.deepcopy(w))
             local_losses.append(copy.deepcopy(loss))
 
@@ -103,7 +103,7 @@ if __name__ == '__main__':
             local_model = LocalUpdate(args=args, dataset=train_dataset,
                                       idxs=user_groups[idx], logger=logger, device='cuda')
             w, loss = local_model.update_weights(
-                model=copy.deepcopy(global_model).cuda(), global_round=epoch, device='cuda')
+                model=copy.deepcopy(global_model).cuda(), global_round=epoch)
             local_weights.append(copy.deepcopy(w))
             local_losses.append(copy.deepcopy(loss))
 
