@@ -36,11 +36,11 @@ def args_parser():
                         help="number of rounds of training")
     parser.add_argument('--num_users', type=int, default=100,
                         help="number of users: K")
-    parser.add_argument('--frac', type=float, default=0.1,
+    parser.add_argument('--frac', type=float, default=0.2,
                         help='the fraction of clients: C')
     parser.add_argument('--local_ep', type=int, default=10,
                         help="the number of local epochs: E")
-    parser.add_argument('--local_bs', type=int, default=10,
+    parser.add_argument('--local_bs', type=int, default=20,
                         help="local batch size: B")
     parser.add_argument('--lr', type=float, default=0.01,
                         help='learning rate')
@@ -69,7 +69,7 @@ def args_parser():
     # other arguments
     # parser.add_argument('--dataset', type=str, default='mnist', help="name \
     #                     of dataset")
-    parser.add_argument('--dataset', type=str, default='cifar', help="name \
+    parser.add_argument('--dataset', type=str, default='mnist', help="name \
                             of dataset")
     parser.add_argument('--num_classes', type=int, default=10, help="number \
                         of classes")
@@ -86,6 +86,7 @@ def args_parser():
                         help='rounds of early stopping')
     parser.add_argument('--verbose', type=int, default=1, help='verbose')
     parser.add_argument('--seed', type=int, default=1, help='random seed')
+    # parser.add_argument('--cpu_frac', type=float, default=0.0, help='the fraction of cpu users, should be in [0,1]')
     parser.add_argument('--cpu_frac', type=float, default=1.0, help='the fraction of cpu users, should be in [0,1]')
     parser.add_argument('--conf_file_name', type=none_or_str, default=None, help='use configuration in <configure> '
                                                                                  'folder, default: use argsparse as'
@@ -98,7 +99,7 @@ def args_parser():
     args = parser.parse_args()
 
     # the root of this repository
-    args.project_home = os.path.abspath(os.path.join(os.path.realpath(__file__), "../.."))
+    args.project_home = os.path.abspath(os.path.join(os.path.realpath(__file__), "..\\.."))
 
     if args.conf_file_name:
         config_path = os.path.join(args.project_home, 'configure', args.conf_file_name)

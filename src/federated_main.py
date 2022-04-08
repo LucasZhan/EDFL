@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     # define paths
     path_project = os.path.abspath('..')
-    logger = SummaryWriter('../logs')
+    logger = SummaryWriter('..\\logs')
 
     args = args_parser()
     exp_details(args)       # print the experiment details
@@ -95,7 +95,7 @@ if __name__ == '__main__':
             local_model = LocalUpdate(args=args, dataset=train_dataset,
                                       idxs=user_groups[idx], logger=logger, device='cpu')
             w, loss = local_model.update_weights(
-                model=copy.deepcopy(global_model), global_round=epoch)
+                model=copy.deepcopy(global_model), global_round=epoch, device='cpu')
             local_weights.append(copy.deepcopy(w))
             local_losses.append(copy.deepcopy(loss))
 
@@ -103,7 +103,7 @@ if __name__ == '__main__':
             local_model = LocalUpdate(args=args, dataset=train_dataset,
                                       idxs=user_groups[idx], logger=logger, device='cuda')
             w, loss = local_model.update_weights(
-                model=copy.deepcopy(global_model), global_round=epoch)
+                model=copy.deepcopy(global_model).cuda(), global_round=epoch, device='cuda')
             local_weights.append(copy.deepcopy(w))
             local_losses.append(copy.deepcopy(loss))
 
@@ -145,7 +145,7 @@ if __name__ == '__main__':
 
     # Saving the objects train_loss and train_accuracy:
 
-    file_name = os.path.join(args.project_home, 'save/objects/{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}].pkl'.format(args.dataset, args.model, args.epochs, args.frac, args.iid,
+    file_name = os.path.join(args.project_home, 'save\\objects\\{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}].pkl'.format(args.dataset, args.model, args.epochs, args.frac, args.iid,
                args.local_ep, args.local_bs))
     # file_name = '../save/objects/{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}].pkl'.format(args.dataset, args.model, args.epochs, args.frac, args.iid,
     #            args.local_ep, args.local_bs)
